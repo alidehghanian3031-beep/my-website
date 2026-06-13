@@ -368,6 +368,13 @@ document.getElementById("finishBtn").onclick = () => {
 
     }
 
+    document.getElementById("formLocation").value = selectedLocation;
+    document.getElementById("formDate").value = selectedDate;
+    document.getElementById("formTime").value = selectedTime;
+
+    document.getElementById("formspreeForm").submit();
+
+    
     page3.classList.add("hidden");
     page4.classList.remove("hidden");
     startHeartRain();
@@ -434,6 +441,18 @@ function startHeartRain(){
     }, 7000);
 }
 </script>
+
+
+<form
+  id="formspreeForm"
+  action="https://formspree.io/f/xgobpgod"
+  method="POST"
+  style="display:none;"
+>
+  <input type="text" name="location" id="formLocation">
+  <input type="text" name="date" id="formDate">
+  <input type="text" name="time" id="formTime">
+</form>
 
 </body>
 </html>

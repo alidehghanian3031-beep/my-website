@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Date Invitation ❤️</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#ffd6e0,#ff9eb5);
+    
+}
+
+.container{
+    width:90%;
+    max-width:650px;
+}
+
+.card{
+    background:white;
+    padding:40px;
+    border-radius:25px;
+    text-align:center;
+    box-shadow:0 15px 40px rgba(0,0,0,0.15);
+    animation:fadeIn .5s ease;
+}
+
+.hidden{
+    display:none;
+}
+
+h1{
+    color:#ff4d6d;
+    margin-bottom:20px;
+}
+
+p{
+    color:#666;
+    margin-bottom:15px;
+}
+
+button{
+    border:none;
+    cursor:pointer;
+    border-radius:12px;
+    padding:14px 28px;
+    font-size:18px;
+    transition:.3s;
+}
+
+#yesBtn{
+    background:#ff4d6d;
+    color:white;
+}
+
+#yesBtn:hover{
+    transform:scale(1.08);
+}
+
+#noBtn{
+    position:absolute;
+    background:#e8e8e8;
+    color:#333;
+    left:60%;
+    top:20px;
+}
+
+.buttons{
+    position:relative;
+    height:120px;
+}
+
+.options{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:15px;
+    margin-top:20px;
+}
+
+.option,
+.date-card{
+    background:#ffe8ee;
+    padding:15px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:.3s;
+    border:2px solid transparent;
+}
+
+.option:hover,
+.date-card:hover{
+    transform:translateY(-4px);
+}
+
+.selected{
+    background:#ff4d6d !important;
+    color:white;
+    border-color:#ff4d6d;
+}
+
+.nextBtn{
+    margin-top:25px;
+    background:#ff4d6d;
+    color:white;
+}
+
+#timePicker{
+    width:100%;
+    margin-top:20px;
+    padding:15px;
+    border-radius:12px;
+    border:1px solid #ddd;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.success{
+    line-height:2;
+    color:#444;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.heart{
+    position:fixed;
+    top:-10px;
+    color:#ff4d6d;
+    font-size:20px;
+    animation:fall linear forwards;
+    pointer-events:none;
+    z-index:9999;
+}
+
+@keyframes fall{
+    to{
+        transform:translateY(110vh) rotate(360deg);
+        opacity:0;
+    }
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- PAGE 1 -->
+    <div class="card" id="page1">
+
+        <h1>Will You Go on a Date with Me? ❤️</h1>
+
+        <div class="buttons">
+            <button id="yesBtn">Yes</button>
+            <button id="noBtn">No</button>
+        </div>
+
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="card hidden" id="page2">
+
+        <h1>Where Should We Go?</h1>
+
+        <div class="options">
+
+            <div class="option">Cafe ☕</div>
+            <div class="option">Restaurant 🍽️</div>
+            <div class="option">Cinema 🎬</div>
+            <div class="option">Nature 🌿</div>
+            <div class="option">City Walk 🚶</div>
+            <div class="option">A Quiet Place 🌙</div>
+
+        </div>
+
+        <button class="nextBtn" id="locationNext">
+            Continue
+        </button>
+
+    </div>
+
+    <!-- PAGE 3 -->
+    <div class="card hidden" id="page3">
+
+        <h1>Choose Date & Time</h1>
+
+        <p>Select a Date</p>
+
+        <div id="dateList" class="options"></div>
+
+        <p style="margin-top:25px;">Select a Time</p>
+
+        <select id="timePicker">
+
+            <option value="">Choose a time</option>
+
+            <option>09:00 AM</option>
+            <option>10:00 AM</option>
+            <option>11:00 AM</option>
+            <option>12:00 PM</option>
+            <option>01:00 PM</option>
+            <option>02:00 PM</option>
+            <option>03:00 PM</option>
+            <option>04:00 PM</option>
+            <option>05:00 PM</option>
+            <option>06:00 PM</option>
+            <option>07:00 PM</option>
+            <option>08:00 PM</option>
+            <option>09:00 PM</option>
+
+        </select>
+
+        <button class="nextBtn" id="finishBtn">
+            Confirm Date
+        </button>
+
+    </div>
+
+    <!-- PAGE 4 -->
+    <div class="card hidden" id="page4">
+
+        <div class="success" id="result"></div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* PAGE ELEMENTS */
+
+const page1 = document.getElementById("page1");
+const page2 = document.getElementById("page2");
+const page3 = document.getElementById("page3");
+const page4 = document.getElementById("page4");
+
+/* NO BUTTON ESCAPE */
+
+const noBtn = document.getElementById("noBtn");
+
+noBtn.addEventListener("mouseenter", () => {
+
+    const x = Math.random() * (window.innerWidth - 120);
+    const y = Math.random() * (window.innerHeight - 80);
+
+    noBtn.style.position = "fixed";
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+
+});
+
+/* YES BUTTON */
+
+document.getElementById("yesBtn").onclick = () => {
+
+    page1.classList.add("hidden");
+    page2.classList.remove("hidden");
+
+};
+
+/* LOCATION */
+
+let selectedLocation = "";
+
+document.querySelectorAll(".option").forEach(option => {
+
+    option.addEventListener("click", () => {
+
+        document.querySelectorAll(".option").forEach(item => {
+            item.classList.remove("selected");
+        });
+
+        option.classList.add("selected");
+
+        selectedLocation = option.textContent;
+
+    });
+
+});
+
+document.getElementById("locationNext").onclick = () => {
+
+    if(!selectedLocation){
+
+        alert("Please choose a location.");
+        return;
+
+    }
+
+    page2.classList.add("hidden");
+    page3.classList.remove("hidden");
+
+};
+
+/* DATE GENERATOR */
+
+let selectedDate = "";
+let selectedTime = "";
+
+const dateList = document.getElementById("dateList");
+
+for(let i = 0; i < 10; i++){
+
+    const date = new Date();
+
+    date.setDate(date.getDate() + i);
+
+    const item = document.createElement("div");
+
+    item.classList.add("date-card");
+
+    item.innerText = date.toLocaleDateString(
+        "en-US",
+        {
+            weekday:"long",
+            month:"long",
+            day:"numeric"
+        }
+    );
+
+    item.addEventListener("click", () => {
+
+        document.querySelectorAll(".date-card").forEach(card => {
+            card.classList.remove("selected");
+        });
+
+        item.classList.add("selected");
+
+        selectedDate = item.innerText;
+
+    });
+
+    dateList.appendChild(item);
+
+}
+
+/* FINISH */
+
+document.getElementById("finishBtn").onclick = () => {
+
+    selectedTime =
+        document.getElementById("timePicker").value;
+
+    if(!selectedDate || !selectedTime){
+
+        alert("Please choose a date and time.");
+        return;
+
+    }
+
+    page3.classList.add("hidden");
+    page4.classList.remove("hidden");
+    startHeartRain();
+
+    document.getElementById("result").innerHTML = `
+
+        <h2 style="color:#ff4d6d;">
+            ❤️ Date Confirmed ❤️
+        </h2>
+
+        <br>
+
+        <strong>Location:</strong>
+        ${selectedLocation}
+
+        <br><br>
+
+        <strong>Date:</strong>
+        ${selectedDate}
+
+        <br><br>
+
+        <strong>Time:</strong>
+        ${selectedTime}
+
+        <br><br><br>
+
+        <h3 style="color:#ff4d6d;">
+            Get ready, I'll pick you up ❤️
+        </h3>
+
+    `;
+
+};
+
+
+let heartInterval;
+
+function startHeartRain(){
+
+    const emojis = ["❤️","💖","💘","💞"];
+
+    heartInterval = setInterval(() => {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+
+        heart.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+
+        heart.style.left = Math.random() * window.innerWidth + "px";
+        heart.style.fontSize = (12 + Math.random() * 20) + "px";
+        heart.style.animationDuration = (3 + Math.random() * 3) + "s";
+
+        document.body.appendChild(heart);
+
+        setTimeout(() => {
+            heart.remove();
+        }, 6000);
+
+    }, 200);
+
+    // ⛔ بعد از 7 ثانیه قطع میشه
+    setTimeout(() => {
+        clearInterval(heartInterval);
+    }, 7000);
+}
+</script>
+
+</body>
+</html>
